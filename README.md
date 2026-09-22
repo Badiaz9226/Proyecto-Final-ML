@@ -112,7 +112,9 @@ La tabla comparativa completa está en `reports/metricas_validacion_cruzada.csv`
 │   ├── pipeline_muestra_medica.joblib       # pipeline completo para despliegue
 │   └── metadata_modelo.json                 # contrato y opciones de entrada
 ├── reports/                                 # perfil, métricas y evidencia auditable
-├── figures/                                 # gráficos de calidad y evaluación
+├── figures/                                 # gráficos y captura del despliegue público
+├── docs/
+│   └── Formato_Entrega_Proyecto_Integrador_CUM.docx
 ├── src/
 │   ├── data_quality.py                      # auditoría de datos
 │   ├── train_model.py                       # preparación, entrenamiento y evaluación
@@ -155,6 +157,8 @@ streamlit run app.py
 Abra la dirección local que muestre Streamlit, complete las 18 variables y pulse **Clasificar presentación**.
 
 ## Despliegue en Streamlit Community Cloud
+
+Aplicación pública verificada: **https://proyecto-final-ml.streamlit.app**. La evidencia visual de una predicción funcional está en `figures/captura_streamlit.png` y también quedó insertada en el formato de entrega.
 
 1. Publique este repositorio en GitHub con `app.py`, `models/`, `src/`, `requirements.txt` y `runtime.txt`.
 2. En Streamlit Community Cloud seleccione **Create app**.
