@@ -1,0 +1,7 @@
+﻿comprobacion,estado,detalle
+Archivos obligatorios,OK,Todos están presentes
+Contrato exacto de 18 variables,OK,Orden y nombres coinciden con la aplicación
+Contrato aplicación-modelo,OK,Las 18 entradas conservan el mismo orden
+Rutas portables de la aplicación,OK,Todos los artefactos se resuelven desde APP_DIR
+Variables disponibles en el conjunto modelado,OK,Se encontró una presentación válida
+Predicción extremo a extremo,OK,Clase predicha: No

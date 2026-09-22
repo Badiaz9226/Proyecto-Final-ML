@@ -1,0 +1,6 @@
+﻿expedientecum,consecutivocum,cantidad_cum,numero_filas_fuente,numero_cantidades_ingrediente_distintas,numero_principios_activos,numero_vias_administracion,numero_codigos_atc,numero_unidades_medida,numero_unidades_referencia,numero_tipos_rol,numero_actores,forma_farmaceutica,codigo_concentracion,unidad_cum,modalidad,vias_administracion,unidades_medida,familias_atc,tipos_rol,es_muestra_medica,prediccion,puntaje_modelo_no_calibrado
+20077715,48,100.0,4.0,2.0,2.0,1.0,2.0,1.0,1.0,1.0,1.0,TABLETA RECUBIERTA,A,U,FABRICAR Y VENDER,ORAL,mg,A,FABRICANTE,0,0,0.13417839754042163
+45821,20,10.0,5.0,1.0,1.0,1.0,1.0,1.0,1.0,2.0,5.0,TABLETA CUBIERTA (GRAGEA),A,U,IMPORTAR Y VENDER,ORAL,mg,C,FABRICANTE | IMPORTADOR,0,1,0.7061269840167811
+19989090,5,4.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,TABLETA RECUBIERTA,A,U,FABRICAR Y VENDER,ORAL,mg,C,FABRICANTE,1,1,0.832854225811565
+20030605,3,5.0,56.0,28.0,28.0,1.0,1.0,2.0,1.0,2.0,2.0,EMULSION INYECTABLE,A,U,IMPORTAR Y VENDER,INTRAVENOSA,g | mg,B,FABRICANTE | IMPORTADOR,0,1,0.565386404942136
+20094212,3,30.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,TABLETA RECUBIERTA,A,U,FABRICAR Y VENDER,ORAL,mg,C,FABRICANTE,1,0,0.39531088052903673

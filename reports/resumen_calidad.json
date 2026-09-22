@@ -1,0 +1,160 @@
+{
+  "fuente": {
+    "archivo": "data/codigo_unico_medicamentos_vigentes_20260921.csv",
+    "tamano_bytes": 75879254,
+    "sha256": "43cd984ded90ddb8b0bd3d6abdb60a0f7628cd8975cab08fdfb6b61c09e18e6a",
+    "url_oficial": "https://www.datos.gov.co/Salud-y-Protecci-n-Social/C-DIGO-NICO-DE-MEDICAMENTOS-VIGENTES/i7cb-raxc/about_data",
+    "entidad": "Instituto Nacional de Vigilancia de Medicamentos y Alimentos (INVIMA)",
+    "portal": "Datos Abiertos Colombia",
+    "fecha_corte_archivo": "2026-09-21"
+  },
+  "dimensiones": {
+    "filas_originales": 155807,
+    "columnas_originales": 29,
+    "presentaciones_cum_unicas": 65335,
+    "expedientes_cum_unicos": 9520,
+    "filas_duplicadas_exactas": 0,
+    "filas_adicionales_por_granularidad_ingrediente_rol_via": 90472
+  },
+  "granularidad": {
+    "clave_presentacion": [
+      "expedientecum",
+      "consecutivocum"
+    ],
+    "porcentaje_filas_en_cum_repetidos": 83.39933379116471,
+    "filas_promedio_por_cum": 2.384740185199357,
+    "filas_mediana_por_cum": 2.0,
+    "filas_maximas_por_cum": 92,
+    "cum_con_mas_de_una_fila": 39470,
+    "cum_con_objetivo_contradictorio": 0,
+    "advertencia": "La fila original representa combinaciones de ingrediente, rol y vía; el caso de modelado es la presentación CUM. Se debe consolidar antes de entrenar."
+  },
+  "objetivo": {
+    "variable": "muestramedica",
+    "conteos_filas_originales": {
+      "No": 119997,
+      "Si": 35810
+    },
+    "conteos_presentaciones_cum": {
+      "No": 51243,
+      "Si": 14092
+    },
+    "porcentaje_si_presentaciones_cum": 21.568837529654854,
+    "razon_mayoritaria_sobre_minoritaria": 3.636318478569401,
+    "conclusion_balance": "Desbalance moderado (clase positiva cercana al 22%); aplicar remuestreo solo dentro de cada fold de entrenamiento y priorizar F1."
+  },
+  "faltantes": {
+    "porcentaje_por_variable": {
+      "IUM": 79.1620402164216,
+      "fechainactivo": 75.92277625523886,
+      "fechavencimiento": 70.7060658378635,
+      "unidadreferencia": 1.8426643218854095,
+      "fechaexpedicion": 0.24581694018882336,
+      "descripcioncomercial": 0.014761852805072945,
+      "descripcionatc": 0.0,
+      "modalidad": 0.0,
+      "tiporol": 0.0,
+      "nombrerol": 0.0,
+      "formafarmaceutica": 0.0,
+      "cantidad": 0.0,
+      "unidadmedida": 0.0,
+      "principioactivo": 0.0,
+      "concentracion": 0.0,
+      "viaadministracion": 0.0,
+      "expediente": 0.0,
+      "atc": 0.0,
+      "unidad": 0.0,
+      "producto": 0.0,
+      "fechaactivo": 0.0,
+      "estadocum": 0.0,
+      "cantidadcum": 0.0,
+      "consecutivocum": 0.0,
+      "expedientecum": 0.0,
+      "estadoregistro": 0.0,
+      "registrosanitario": 0.0,
+      "titular": 0.0,
+      "muestramedica": 0.0
+    },
+    "variables_con_50_por_ciento_o_mas": [
+      "IUM",
+      "fechainactivo",
+      "fechavencimiento"
+    ]
+  },
+  "fechas": {
+    "fechaexpedicion": {
+      "no_interpretable": 0,
+      "anio_menor_1950": 0,
+      "anio_mayor_2100": 0,
+      "anio_3000": 0,
+      "anio_9999": 0
+    },
+    "fechavencimiento": {
+      "no_interpretable": 0,
+      "anio_menor_1950": 646,
+      "anio_mayor_2100": 31526,
+      "anio_3000": 31473,
+      "anio_9999": 8
+    },
+    "fechaactivo": {
+      "no_interpretable": 0,
+      "anio_menor_1950": 0,
+      "anio_mayor_2100": 0,
+      "anio_3000": 0,
+      "anio_9999": 0
+    },
+    "fechainactivo": {
+      "no_interpretable": 0,
+      "anio_menor_1950": 1543,
+      "anio_mayor_2100": 29,
+      "anio_3000": 27,
+      "anio_9999": 0
+    }
+  },
+  "codificacion_texto": {
+    "celdas_con_caracter_reemplazo": 22,
+    "celdas_con_patron_mojibake": 51
+  },
+  "riesgo_fuga_particion": {
+    "semilla_diagnostico": 42,
+    "cum_en_ambos_conjuntos_si_se_dividen_filas_aleatoriamente": 22416,
+    "porcentaje_cum_test_filtrados_a_train_en_split_por_filas": 69.16810664033572,
+    "porcentaje_filas_test_cuyo_cum_aparece_en_train": 73.40728526457802,
+    "porcentaje_presentaciones_test_con_expediente_en_train_si_split_por_cum": 95.21805273833671,
+    "decision": "Usar partición estratificada y agrupada por expedientecum; el test permanece aislado y las transformaciones/remuestreo se ajustan solo con entrenamiento."
+  },
+  "variables_con_fuga_directa_o_identificadores": {
+    "texto_que_puede_revelar_objetivo": [
+      "producto",
+      "descripcioncomercial"
+    ],
+    "informacion_posterior": [
+      "estadocum",
+      "fechaactivo",
+      "fechainactivo",
+      "fechavencimiento"
+    ],
+    "identificadores": [
+      "expediente",
+      "expedientecum",
+      "consecutivocum",
+      "registrosanitario",
+      "IUM"
+    ],
+    "diagnostico_fuga_textual": {
+      "regla": "Buscar la frase 'muestra médica' en producto + descripcioncomercial",
+      "exactitud": 0.9742404530496671,
+      "precision": 0.9791489690323577,
+      "recall": 0.8997303434572808,
+      "conclusion": "El desempeño artificialmente alto confirma que ambos textos revelan el objetivo; se excluyen antes de entrenar."
+    }
+  },
+  "perfil_ydata": {
+    "generado": true,
+    "archivo": "reports/reporte_ydata_profiling.html",
+    "filas_perfiladas": 155807,
+    "filas_fuente": 155807,
+    "muestra": false,
+    "semilla": null
+  }
+}

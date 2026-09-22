@@ -1,0 +1,30 @@
+﻿variable,tipo_pandas,filas,no_nulos,nulos,porcentaje_nulos,valores_unicos,porcentaje_unicidad_sobre_no_nulos,cadenas_vacias,minimo,maximo,fechas_no_interpretables,fechas_fuera_1950_2100,ejemplos,hallazgos
+expediente,int64,155807,155807,0,0.0,9520,6.1101,0,3521.0,20327080.0,0,0,20048021 | 20077715 | 19924285,Sin alerta automática
+producto,object,155807,155807,0,0.0,9299,5.9683,0,,,0,0,CARDIK ® 3 160/5/12.5 | TRIMEBUTINA200MG + SIMETICONA120MG | TRAMADOL CLORHIDRATO AMPOLLAS 50 MG / 1 ML.,Sin alerta automática
+titular,object,155807,155807,0,0.0,1182,0.7586,0,,,0,0,LABORATORIOS LEGRAND S.A. | TECNOQUIMICAS S.A. | VITALIS S.A.C.I.,Sin alerta automática
+registrosanitario,object,155807,155807,0,0.0,9520,6.1101,0,,,0,0,INVIMA 2023M-0013598-R2 | INVIMA 2022M-0016115-R1 | INVIMA 2021M-0000733-R2,Sin alerta automática
+fechaexpedicion,object,155807,155424,383,0.2458,3385,2.1779,0,1989-07-11,2026-09-11,0,0,08/23/2012 | 08/03/2015 | 11/20/2001,Sin alerta automática
+fechavencimiento,object,155807,45642,110165,70.7061,333,0.7296,0,1000-01-01,9999-09-09,0,32172,01/01/3000 | 08/29/2030 | 07/22/2030,"32,172 fechas fuera de 1950–2100; ausencia ≥ 50%"
+estadoregistro,object,155807,155807,0,0.0,1,0.0006,0,,,0,0,Vigente,Sin alerta automática
+expedientecum,int64,155807,155807,0,0.0,9520,6.1101,0,3521.0,20327080.0,0,0,20048021 | 20077715 | 19924285,Sin alerta automática
+consecutivocum,int64,155807,155807,0,0.0,301,0.1932,0,1.0,301.0,0,0,41 | 48 | 37,Sin alerta automática
+cantidadcum,float64,155807,155807,0,0.0,383,0.2458,0,0.01,107040.0,0,0,203.0 | 100.0 | 2.0,Sin alerta automática
+descripcioncomercial,object,155807,155784,23,0.0148,62461,40.0946,0,,,0,0,PRESENTACION INSTITUCIONAL: CAJA POR 203 TABLETASEN BLISTER OPA/AL/PVC - ALUMINIO. | INSTITUCIONAL: CAJA PLEGADIZA POR 100 TABLETAS CUBIERTAS. EN BLISTER PVC/PVDC/ALU TRANSPARENTE POR 10 TABLETAS EN CADA B | CAJA PLEGADIZA POR 1 AMPOLLA EN VIDRIO TIPO I X 2SIN DATOML CADA UNO,Sin alerta automática
+estadocum,object,155807,155807,0,0.0,2,0.0013,0,,,0,0,Inactivo | Activo,Sin alerta automática
+fechaactivo,object,155807,155807,0,0.0,4764,3.0576,0,2006-11-10,2026-09-15,0,0,05/13/2015 | 03/03/2015 | 05/10/2007,Sin alerta automática
+fechainactivo,object,155807,37514,118293,75.9228,2174,5.7952,0,1900-01-01,3000-01-01,0,1572,11/26/2025 | 03/23/2012 | 11/28/2020,"1,572 fechas fuera de 1950–2100; ausencia ≥ 50%"
+muestramedica,object,155807,155807,0,0.0,2,0.0013,0,,,0,0,No | Si,Sin alerta automática
+unidad,object,155807,155807,0,0.0,12,0.0077,0,,,0,0,U | ml | g,Sin alerta automática
+atc,object,155807,155807,0,0.0,1600,1.0269,0,,,0,0,C09DX01 | A03AX13 | N02AX02,Sin alerta automática
+descripcionatc,object,155807,155807,0,0.0,1452,0.9319,0,,,0,0,VALSARTAN. AMLODIPINA E HIDROCLOROTIAZIDA. | SILICONAS | TRAMADOL,Sin alerta automática
+viaadministracion,object,155807,155807,0,0.0,47,0.0302,0,,,0,0,ORAL | SUBCUTANEA | OFTÁLMICA,Sin alerta automática
+concentracion,object,155807,155807,0,0.0,7,0.0045,0,,,0,0,A | C | B,Sin alerta automática
+principioactivo,object,155807,155807,0,0.0,5888,3.779,0,,,0,0,HIDROCLOROTIAZIDA | TRIMEBUTINA MALEATO | TRAMADOL CLORHIDRATO,Sin alerta automática
+unidadmedida,object,155807,155807,0,0.0,95,0.061,0,,,0,0,mg | g | UD,Sin alerta automática
+cantidad,float64,155807,155807,0,0.0,1051,0.6746,0,0.0,10000000.0,0,0,12.5 | 200.0 | 50.0,Sin alerta automática
+unidadreferencia,object,155807,152936,2871,1.8427,2103,1.3751,0,,,0,0,TABLETA RECUBIERTA | 1 ML | ML DE SOLUCIÓN OFTALMICA,Sin alerta automática
+formafarmaceutica,object,155807,155807,0,0.0,103,0.0661,0,,,0,0,TABLETA RECUBIERTA | SOLUCION INYECTABLE | TABLETA CUBIERTA (GRAGEA),Sin alerta automática
+nombrerol,object,155807,155807,0,0.0,2370,1.5211,0,,,0,0,LABORATORIOS LEGRANDS.A. | TECNOQUIMICAS S.A. (PLANTA JAMUNDI) | VITALIS S.A.C.I. PLANTA 8,Sin alerta automática
+tiporol,object,155807,155807,0,0.0,2,0.0013,0,,,0,0,FABRICANTE | IMPORTADOR,Sin alerta automática
+modalidad,object,155807,155807,0,0.0,5,0.0032,0,,,0,0,FABRICAR Y VENDER | IMPORTAR Y VENDER | IMPORTAR. SEMIELABORAR Y VENDER,Sin alerta automática
+IUM,object,155807,32467,123340,79.162,12434,38.2973,0,,,0,0,1B1029871000102 | 2C1024881005100 | 1M1003751001100,ausencia ≥ 50%

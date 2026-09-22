@@ -1,0 +1,33 @@
+﻿variable,tipo,metodo,asociacion,asociacion_absoluta,p_valor,observaciones_usadas,valores_unicos_originales,nota
+titular,categórica,V de Cramér corregida,0.23794134473980835,0.23794134473980835,0.0,65335,1181,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+nombrerol,categórica,V de Cramér corregida,0.18701283662791415,0.18701283662791415,0.0,65335,2097,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+formafarmaceutica,categórica,V de Cramér corregida,0.1378729136975075,0.1378729136975075,4.223606366852291e-238,65335,103,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+modalidad,categórica,V de Cramér corregida,0.13470667249222762,0.13470667249222762,2.94438585834146e-256,65335,5,Asociación exploratoria; no implica causalidad.
+fechaactivo,fecha,Correlación punto-biserial (año),0.12674292891455385,0.12674292891455385,4.4257505533942344e-232,65335,4764,Asociación exploratoria; no implica causalidad. Fecha excluida del modelo por temporalidad/calidad.
+numero_roles,numérica,Correlación punto-biserial,0.12101814021445984,0.12101814021445984,1.2653109653908684e-211,65335,2,Asociación exploratoria; no implica causalidad.
+descripcionatc,categórica,V de Cramér corregida,0.11572629698676033,0.11572629698676033,7.927035240597904e-162,65335,1448,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+atc,categórica,V de Cramér corregida,0.11536097919861166,0.11536097919861166,1.0859875177689857e-160,65335,1593,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+viaadministracion,categórica,V de Cramér corregida,0.11457887052993862,0.11457887052993862,4.9188828380254534e-160,65335,46,Asociación exploratoria; no implica causalidad.
+unidadreferencia,categórica,V de Cramér corregida,0.09034015391729602,0.09034015391729602,2.6010998077597447e-92,65335,2081,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+principioactivo,categórica,V de Cramér corregida,0.08941270925538553,0.08941270925538553,3.8751084222779823e-90,65335,5332,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+numero_actores,numérica,Correlación punto-biserial,0.08880853727789291,0.08880853727789291,1.622566370658546e-114,65335,8,Asociación exploratoria; no implica causalidad.
+producto,categórica,V de Cramér corregida,0.08824290887343389,0.08824290887343389,1.9594385543140769e-87,65335,9299,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+registrosanitario,categórica,V de Cramér corregida,0.08320118865887434,0.08320118865887434,2.9515512231669833e-76,65335,9520,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+unidadmedida,categórica,V de Cramér corregida,0.08071548626603058,0.08071548626603058,4.967603065195728e-71,65335,88,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+tiporol,categórica,V de Cramér corregida,0.06882724227901667,0.06882724227901667,1.6998226944324656e-69,65335,2,Asociación exploratoria; no implica causalidad.
+numero_vias_administracion,numérica,Correlación punto-biserial,-0.06061556856120353,0.06061556856120353,3.075391884850013e-54,65335,6,Asociación exploratoria; no implica causalidad.
+fechavencimiento,fecha,Correlación punto-biserial (año),-0.05387306531754215,0.05387306531754215,3.875028119738408e-13,18136,333,Asociación exploratoria; no implica causalidad. Fecha excluida del modelo por temporalidad/calidad.
+IUM,categórica,V de Cramér corregida,0.0494073977663323,0.0494073977663323,1.4483197982049647e-21,65335,12434,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+concentracion,categórica,V de Cramér corregida,0.049391363367190404,0.049391363367190404,4.285180599807518e-33,65335,7,Asociación exploratoria; no implica causalidad.
+descripcioncomercial,categórica,V de Cramér corregida,0.04299124629552724,0.04299124629552724,3.1826518604496643e-15,65335,62461,Asociación exploratoria; no implica causalidad. Niveles raros agrupados en <OTROS> para el cálculo.
+fechaexpedicion,fecha,Correlación punto-biserial (año),0.04280750279308651,0.04280750279308651,8.586548925961882e-28,65097,3385,Asociación exploratoria; no implica causalidad. Fecha excluida del modelo por temporalidad/calidad.
+cantidadcum,numérica,Correlación punto-biserial,-0.03981355499268624,0.03981355499268624,2.4238872976899395e-24,65335,383,Asociación exploratoria; no implica causalidad.
+estadocum,categórica,V de Cramér corregida,0.0393729766278184,0.0393729766278184,4.81346987403636e-24,65335,2,Asociación exploratoria; no implica causalidad.
+unidad,categórica,V de Cramér corregida,0.03884614266407495,0.03884614266407495,2.211333584865792e-18,65335,12,Asociación exploratoria; no implica causalidad.
+numero_filas_fuente,numérica,Correlación punto-biserial,0.0286381240175176,0.0286381240175176,2.4526936942126445e-13,65335,35,Asociación exploratoria; no implica causalidad.
+numero_principios_activos,numérica,Correlación punto-biserial,0.013940268896381003,0.013940268896381003,0.0003661701792756231,65335,26,Asociación exploratoria; no implica causalidad.
+numero_codigos_atc,numérica,Correlación punto-biserial,0.012662356659875645,0.012662356659875645,0.0012093895785026847,65335,4,Asociación exploratoria; no implica causalidad.
+expediente,numérica,Correlación punto-biserial,0.01158929186117743,0.01158929186117743,0.0030530219279881455,65335,9520,Asociación exploratoria; no implica causalidad.
+cantidad,numérica,Correlación punto-biserial,-0.011195358673995891,0.011195358673995891,0.004214442671561105,65335,816,Asociación exploratoria; no implica causalidad.
+fechainactivo,fecha,Correlación punto-biserial (año),-0.009880793080146876,0.009880793080146876,0.20389602764288817,16536,2174,Asociación exploratoria; no implica causalidad. Fecha excluida del modelo por temporalidad/calidad.
+estadoregistro,categórica,V de Cramér corregida,,,,65335,1,Asociación exploratoria; no implica causalidad.

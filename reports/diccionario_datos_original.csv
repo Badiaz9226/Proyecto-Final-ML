@@ -1,0 +1,30 @@
+﻿variable,descripcion,tipo_semantico,tipo_pandas_observado,porcentaje_nulos,valores_unicos,uso_modelado_y_tratamiento
+expediente,Identificador del expediente del registro sanitario.,Identificador administrativo,int64,0.0,9520,Excluir: identificador de alta cardinalidad y equivalente práctico del expediente CUM.
+producto,Nombre declarado del medicamento o producto.,Texto descriptivo,object,0.0,9299,Excluir: el texto puede contener literalmente 'muestra médica' y filtrar el objetivo.
+titular,Persona jurídica titular del registro sanitario.,Categoría de alta cardinalidad,object,0.0,1182,Excluir del modelo base para evitar memorizar actores y reducir sesgo por titular.
+registrosanitario,Código del registro sanitario otorgado por INVIMA.,Identificador,object,0.0,9520,Excluir: identificador de alta cardinalidad sin interpretación causal.
+fechaexpedicion,Fecha de expedición del registro sanitario.,Fecha administrativa,object,0.2458,3385,Excluir: no representa una característica estructural de la presentación y puede inducir deriva temporal.
+fechavencimiento,Fecha registrada de vencimiento del registro sanitario.,Fecha administrativa,object,70.7061,333,"Excluir: faltantes y fechas centinela (por ejemplo, año 3000)."
+estadoregistro,Estado vigente del registro sanitario.,Categoría administrativa,object,0.0,1,Excluir: el universo ya corresponde a registros vigentes y aporta variación limitada.
+expedientecum,Identificador del expediente asociado al Código Único de Medicamento (CUM).,Identificador/grupo,int64,0.0,9520,Usar solo como grupo de partición; nunca como predictor.
+consecutivocum,Consecutivo de la presentación dentro del expediente CUM.,Identificador,int64,0.0,301,Usar con expedientecum para consolidar la presentación; excluir como predictor.
+cantidadcum,Cantidad de unidades contenidas en la presentación comercial.,Numérica estructural,float64,0.0,383,Candidata; imputar con mediana y aplicar log1p dentro del pipeline.
+descripcioncomercial,Descripción textual del empaque o presentación comercial.,Texto descriptivo,object,0.0148,62461,Excluir: puede mencionar explícitamente 'muestra médica' y causar fuga del objetivo.
+estadocum,Estado activo o inactivo de la presentación CUM.,Categoría posterior/administrativa,object,0.0,2,"Excluir: estado observado después del registro, no disponible de forma fiable en prevalidación."
+fechaactivo,Fecha desde la cual la presentación figura activa.,Fecha administrativa,object,0.0,4764,Excluir del modelo: información temporal posterior o simultánea al registro.
+fechainactivo,Fecha en que la presentación pasó a estado inactivo.,Fecha posterior,object,75.9228,2174,Excluir estrictamente: fuga temporal y alto porcentaje de faltantes.
+muestramedica,Indica si la presentación está registrada como muestra médica (Si/No).,Objetivo binario,object,0.0,2,"Variable objetivo; normalizar Si=1 y No=0, nunca incluir entre predictores."
+unidad,Unidad usada para expresar la cantidad de la presentación CUM.,Categoría estructural,object,0.0,12,Candidata; normalizar texto e imputar dentro del pipeline.
+atc,"Código de clasificación Anatómica, Terapéutica y Química (ATC).",Categoría clínica,object,0.0,1600,"Agregar por CUM y usar el primer nivel ATC y el número de códigos, no el código completo aislado."
+descripcionatc,Descripción del código ATC.,Texto/categoría clínica,object,0.0,1452,Excluir por redundancia con atc y alta cardinalidad.
+viaadministracion,Vía o vías de administración del medicamento.,Categoría estructural multivaluada,object,0.0,47,Agregar como conjunto ordenado por CUM y contar vías.
+concentracion,Indicador o clasificación de concentración reportada.,Categoría estructural,object,0.0,7,Candidata; imputar dentro del pipeline.
+principioactivo,Nombre del ingrediente o principio activo asociado a la presentación.,Categoría multivaluada,object,0.0,5888,No usar el nombre completo por cardinalidad; agregar y usar el número de principios activos.
+unidadmedida,Unidad de medida de la cantidad del ingrediente.,Categoría estructural multivaluada,object,0.0,95,"Normalizar abreviaturas, agregar como conjunto por CUM y contar unidades distintas."
+cantidad,"Cantidad reportada para cada ingrediente, expresada en unidadmedida.",Numérica por ingrediente,float64,0.0,1051,No usar directamente: mezcla escalas/unidades y varias filas por presentación.
+unidadreferencia,Unidad o presentación de referencia para interpretar la cantidad del ingrediente.,Categoría de alta cardinalidad,object,1.8427,2103,Excluir del modelo base por heterogeneidad textual y redundancia con la forma/unidad.
+formafarmaceutica,"Forma farmacéutica de la presentación (tableta, solución, etc.).",Categoría estructural,object,0.0,103,Candidata; imputar y codificar dentro del pipeline.
+nombrerol,Nombre de la organización que cumple un rol en el registro.,Categoría de alta cardinalidad,object,0.0,2370,Excluir nombres; usar solo el número de actores distintos por CUM.
+tiporol,"Tipo de rol de la organización (fabricante, importador, etc.).",Categoría multivaluada,object,0.0,2,Agregar como conjunto por CUM y contar roles distintos.
+modalidad,"Modalidad autorizada del registro (fabricar y vender, importar, etc.).",Categoría estructural,object,0.0,5,Candidata; imputar y codificar dentro del pipeline.
+IUM,"Identificador Único de Medicamento (IUM), cuando está disponible.",Identificador,object,79.162,12434,Excluir: alta ausencia y carácter identificador.
