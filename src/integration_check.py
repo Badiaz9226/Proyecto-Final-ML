@@ -59,7 +59,7 @@ REQUIRED_FILES = [
     Path("requirements.txt"),
     Path("runtime.txt"),
     Path("README.md"),
-    Path("notebooks/Proyecto_Final_ML_CUM.ipynb"),
+    Path("notebook/Proyecto_Final_ML_CUM.ipynb"),
     Path("reports/reporte_ydata_profiling.html"),
     Path("models/pipeline_muestra_medica.joblib"),
     Path("models/metadata_modelo.json"),

@@ -873,36 +873,98 @@ def build_notebook() -> nbf.NotebookNode:
 
     prompt(
         24,
-        "Ejecutar la comparación completa sin mirar el test",
-        "Evalúa los ocho modelos, ajusta las grillas de logística y SVM, compara folds "
-        "alineados, bloquea la elección y solo después evalúa una vez el holdout. "
-        "Centraliza el procedimiento en una función versionada para que Colab, el "
-        "script y la aplicación utilicen exactamente la misma lógica.",
+        "Cargar resultados verificados o reentrenar desde cero",
+        "En el modo rápido carga el modelo, las métricas, los folds y las grillas ya "
+        "calculados y versionados en el repositorio. Esto permite ejecutar y revisar "
+        "el cuaderno sin repetir decenas de ajustes antes del despliegue. Si se desea "
+        "reproducir todo el experimento, activa el reentrenamiento completo; el proceso "
+        "mostrará avances mientras evalúa ocho modelos y dos grillas.",
     )
     code(
         r"""
-        # Este bloque es el de mayor duración. La función conserva el test aislado,
-        # ajusta cada transformación dentro de CV y devuelve todos los artefactos.
-        EJECUTAR_ENTRENAMIENTO_COMPLETO = True
-        if not EJECUTAR_ENTRENAMIENTO_COMPLETO:
-            raise RuntimeError(
-                "Cambie EJECUTAR_ENTRENAMIENTO_COMPLETO a True para producir resultados reales."
-            )
+        # False es el modo recomendado para revisión y despliegue: reutiliza los
+        # artefactos actuales del repositorio. True reproduce todo el experimento.
+        REENTRENAR_DESDE_CERO = False
 
-        with warnings.catch_warnings(record=True) as avisos_entrenamiento:
-            warnings.simplefilter("always", ConvergenceWarning)
-            artefactos = train_model.train_and_evaluate(datos_crudos.copy())
-        resultados = artefactos.results
-        print("Entrenamiento y evaluación terminados con datos reales.")
-        avisos_convergencia = [
-            aviso for aviso in avisos_entrenamiento
-            if issubclass(aviso.category, ConvergenceWarning)
-        ]
-        if avisos_convergencia:
+        if REENTRENAR_DESDE_CERO:
+            with warnings.catch_warnings(record=True) as avisos_entrenamiento:
+                warnings.simplefilter("always", ConvergenceWarning)
+                artefactos = train_model.train_and_evaluate(
+                    datos_crudos.copy(), show_progress=True
+                )
+            resultados = artefactos.results
+            print("Entrenamiento y evaluación terminados con datos reales.")
+            avisos_convergencia = [
+                aviso for aviso in avisos_entrenamiento
+                if issubclass(aviso.category, ConvergenceWarning)
+            ]
+            if avisos_convergencia:
+                print(
+                    f"Nota diagnóstica: {len(avisos_convergencia)} ajustes de SVM "
+                    "alcanzaron el límite de iteraciones; las métricas se conservaron "
+                    "y la selección se contrastó con los demás modelos."
+                )
+        else:
+            import ast
+            from types import SimpleNamespace
+
+            rutas_artefactos = {
+                "resultados": REPORTES / "resultados_modelado.json",
+                "folds": REPORTES / "metricas_cv_por_fold.csv",
+                "grid_logistica": REPORTES / "resultados_grid_logistica.csv",
+                "grid_svm": REPORTES / "resultados_grid_svm.csv",
+                "predicciones": REPORTES / "predicciones_datos_no_vistos.csv",
+                "pipeline": MODELOS / "pipeline_muestra_medica.joblib",
+            }
+            faltantes_artefactos = [
+                str(ruta.relative_to(RAIZ))
+                for ruta in rutas_artefactos.values()
+                if not ruta.exists()
+            ]
+            if faltantes_artefactos:
+                raise FileNotFoundError(
+                    "Faltan artefactos del modo rápido: " + ", ".join(faltantes_artefactos)
+                )
+
+            resultados = json.loads(
+                rutas_artefactos["resultados"].read_text(encoding="utf-8")
+            )
+            grid_logistica_guardado = pd.read_csv(
+                rutas_artefactos["grid_logistica"], encoding="utf-8-sig"
+            )
+            grid_svm_guardado = pd.read_csv(
+                rutas_artefactos["grid_svm"], encoding="utf-8-sig"
+            )
+            for tabla in (grid_logistica_guardado, grid_svm_guardado):
+                parametros = tabla["params"].map(ast.literal_eval)
+                for nombre_parametro in sorted({
+                    clave for diccionario in parametros for clave in diccionario
+                }):
+                    tabla[f"param_{nombre_parametro}"] = parametros.map(
+                        lambda diccionario: diccionario.get(nombre_parametro)
+                    )
+
+            pipeline_guardado = joblib.load(rutas_artefactos["pipeline"])
+            artefactos = SimpleNamespace(
+                evaluation_pipeline=None,
+                deployment_pipeline=pipeline_guardado,
+                modeling_table=datos_modelo,
+                results=resultados,
+                test_predictions=pd.read_csv(
+                    rutas_artefactos["predicciones"], encoding="utf-8-sig"
+                ),
+                cv_fold_scores=pd.read_csv(
+                    rutas_artefactos["folds"], encoding="utf-8-sig"
+                ),
+                logistic_grid_results=grid_logistica_guardado,
+                svm_grid_results=grid_svm_guardado,
+            )
             print(
-                f"Nota diagnóstica: {len(avisos_convergencia)} ajustes de SVM "
-                "alcanzaron el límite de iteraciones; las métricas se conservaron "
-                "y la selección se contrastó con los demás modelos."
+                "Modo rápido: modelo y resultados verificados cargados desde el repositorio."
+            )
+            print(
+                "Para reproducir todos los ajustes cambie REENTRENAR_DESDE_CERO a True; "
+                "en Colab puede tardar varios minutos."
             )
         """
     )
@@ -1088,28 +1150,44 @@ def build_notebook() -> nbf.NotebookNode:
     )
     code(
         r"""
-        modelo_evaluacion = artefactos.evaluation_pipeline
-        prediccion_test = modelo_evaluacion.predict(X_test)
-        puntaje_test = train_model._score_values(modelo_evaluacion, X_test)
+        if artefactos.evaluation_pipeline is None:
+            from IPython.display import Image
 
-        figura, ejes = plt.subplots(1, 3, figsize=(17, 4.8))
-        ConfusionMatrixDisplay.from_predictions(
-            y_test, prediccion_test, display_labels=["No", "Sí"], cmap="Blues",
-            colorbar=False, ax=ejes[0]
-        )
-        ejes[0].set_title("Matriz de confusión — test")
-        if puntaje_test is not None:
-            RocCurveDisplay.from_predictions(y_test, puntaje_test, ax=ejes[1])
-            ejes[1].plot([0, 1], [0, 1], "--", color="gray", label="azar")
-            ejes[1].set_title("Curva ROC — test")
-            PrecisionRecallDisplay.from_predictions(y_test, puntaje_test, ax=ejes[2])
-            ejes[2].axhline(y_test.mean(), linestyle="--", color="gray", label="prevalencia")
-            ejes[2].set_title("Curva Precision-Recall — test")
+            print(
+                "Modo rápido: se muestran las figuras del test aislado generadas "
+                "durante el entrenamiento versionado."
+            )
+            for nombre_figura in [
+                "matriz_confusion_test.png",
+                "curva_roc_test.png",
+                "curva_precision_recall_test.png",
+            ]:
+                display(Image(filename=str(FIGURAS / nombre_figura)))
         else:
-            ejes[1].text(0.5, 0.5, "Modelo sin score continuo", ha="center")
-            ejes[2].text(0.5, 0.5, "Modelo sin score continuo", ha="center")
-        plt.tight_layout()
-        plt.show()
+            modelo_evaluacion = artefactos.evaluation_pipeline
+            prediccion_test = modelo_evaluacion.predict(X_test)
+            puntaje_test = train_model._score_values(modelo_evaluacion, X_test)
+
+            figura, ejes = plt.subplots(1, 3, figsize=(17, 4.8))
+            ConfusionMatrixDisplay.from_predictions(
+                y_test, prediccion_test, display_labels=["No", "Sí"], cmap="Blues",
+                colorbar=False, ax=ejes[0]
+            )
+            ejes[0].set_title("Matriz de confusión — test")
+            if puntaje_test is not None:
+                RocCurveDisplay.from_predictions(y_test, puntaje_test, ax=ejes[1])
+                ejes[1].plot([0, 1], [0, 1], "--", color="gray", label="azar")
+                ejes[1].set_title("Curva ROC — test")
+                PrecisionRecallDisplay.from_predictions(y_test, puntaje_test, ax=ejes[2])
+                ejes[2].axhline(
+                    y_test.mean(), linestyle="--", color="gray", label="prevalencia"
+                )
+                ejes[2].set_title("Curva Precision-Recall — test")
+            else:
+                ejes[1].text(0.5, 0.5, "Modelo sin score continuo", ha="center")
+                ejes[2].text(0.5, 0.5, "Modelo sin score continuo", ha="center")
+            plt.tight_layout()
+            plt.show()
         """
     )
 
@@ -1126,7 +1204,11 @@ def build_notebook() -> nbf.NotebookNode:
         ejemplos_no_vistos = artefactos.test_predictions.copy()
         display(ejemplos_no_vistos)
 
-        train_model.save_artifacts(artefactos, RAIZ)
+        if REENTRENAR_DESDE_CERO:
+            train_model.save_artifacts(artefactos, RAIZ)
+            print("Artefactos recalculados y guardados.")
+        else:
+            print("Modo rápido: se conservan los artefactos versionados del repositorio.")
         ruta_modelo = MODELOS / "pipeline_muestra_medica.joblib"
         pipeline_recargado = joblib.load(ruta_modelo)
         prediccion_repetida = pipeline_recargado.predict(X.head(3))

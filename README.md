@@ -167,6 +167,13 @@ reportes versionados. La segunda conserva la pila científica preinstalada por C
 solo agrega un módulo si realmente falta, evitando incompatibilidades binarias al
 reinstalar NumPy con el kernel activo.
 
+La celda 24 funciona en modo rápido por defecto: carga el pipeline, las métricas,
+las búsquedas de hiperparámetros y las predicciones ya verificadas y versionadas en
+este repositorio. Así, **Ejecutar todas** termina sin repetir decenas de ajustes de
+modelos. Para reproducir el experimento completo desde cero, cambie
+`REENTRENAR_DESDE_CERO = True` en esa celda; Colab mostrará el avance y el proceso
+puede tardar varios minutos según los recursos asignados.
+
 Si antes ejecutó una versión antigua del cuaderno que reinstalaba NumPy, reinicie la
 sesión de Colab una vez antes de ejecutar la versión corregida.
 
@@ -208,4 +215,4 @@ No se requieren rutas locales, Google Drive montado ni variables privadas. El ar
 - Métrica de selección: F1 de la clase `Sí`.
 - Evidencia del perfil: `reports/reporte_ydata_profiling.html`.
 - Evidencia de integración: `reports/prueba_integracion.csv`.
-- El cuaderno contiene los prompts usados paso a paso y no incluye resultados inventados: al ejecutarlo en Colab reproduce los artefactos desde la fuente.
+- El cuaderno contiene los prompts usados paso a paso y no incluye resultados inventados: por defecto consume los artefactos verificables del repositorio y permite regenerarlos desde la fuente activando el reentrenamiento completo.

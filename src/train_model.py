@@ -548,7 +548,16 @@ class TrainingArtifacts:
     svm_grid_results: pd.DataFrame
 
 
-def train_and_evaluate(raw: pd.DataFrame) -> TrainingArtifacts:
+def train_and_evaluate(
+    raw: pd.DataFrame,
+    *,
+    show_progress: bool = False,
+) -> TrainingArtifacts:
+    def progress(message: str) -> None:
+        if show_progress:
+            print(message, flush=True)
+
+    progress("[1/6] Consolidando el dataset a una fila por presentación CUM...")
     modeling = build_modeling_table(raw)
     X = modeling[MODEL_FEATURES].copy()
     y = modeling[TARGET_COLUMN].astype(int)
@@ -584,7 +593,9 @@ def train_and_evaluate(raw: pd.DataFrame) -> TrainingArtifacts:
     fold_f1: dict[str, list[float]] = {}
     cv_summary: dict[str, Any] = {}
 
-    for model_name, estimator in catalog.items():
+    progress("[2/6] Comparando ocho modelos con validación cruzada agrupada...")
+    for model_number, (model_name, estimator) in enumerate(catalog.items(), start=1):
+        progress(f"  - Modelo {model_number}/8: {model_name}")
         pipeline = make_pipeline(estimator)
         validation = cross_validate(
             pipeline,
@@ -620,6 +631,7 @@ def train_and_evaluate(raw: pd.DataFrame) -> TrainingArtifacts:
             )
 
     # Hyperparameter tuning mirrors the two course models emphasized in class.
+    progress("[3/6] Ajustando la grilla de regresión logística (30 ajustes)...")
     logistic_grid = GridSearchCV(
         estimator=make_pipeline(
             LogisticRegression(
@@ -642,6 +654,7 @@ def train_and_evaluate(raw: pd.DataFrame) -> TrainingArtifacts:
     )
     logistic_grid.fit(X_train, y_train, groups=groups_train)
 
+    progress("[4/6] Ajustando la grilla de SVM lineal (30 ajustes)...")
     svm_grid = GridSearchCV(
         estimator=make_pipeline(
             LinearSVC(tol=1e-3, max_iter=100_000, random_state=RANDOM_STATE)
@@ -664,6 +677,7 @@ def train_and_evaluate(raw: pd.DataFrame) -> TrainingArtifacts:
         "SVM lineal ajustada": svm_grid.best_estimator_,
     }
     tuned_cv: dict[str, Any] = {}
+    progress("[5/6] Validando candidatos ajustados y evaluando el holdout...")
     for model_name, pipeline in tuned_candidates.items():
         validation = cross_validate(
             pipeline,
@@ -806,7 +820,9 @@ def train_and_evaluate(raw: pd.DataFrame) -> TrainingArtifacts:
     test_examples = test_rows.head(5).copy()
 
     # Refit for deployment only after model choice and holdout results are frozen.
+    progress("[6/6] Reajustando el modelo seleccionado para despliegue...")
     deployment_pipeline = clone(final_pipeline).fit(X, y)
+    progress("Entrenamiento completo finalizado.")
 
     results: dict[str, Any] = {
         "data": {
