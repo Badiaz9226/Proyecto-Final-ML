@@ -1,7 +1,10 @@
 -r requirements.txt
+# Mantener setuptools<81 para compatibilidad con paquetes que aún importan pkg_resources.
+setuptools<81
+# Kernel estable para Jupyter/VS Code.
+ipykernel==7.4.0
 matplotlib==3.10.0
 seaborn==0.13.2
 scipy==1.16.3
 ydata-profiling==4.18.4
 jupyter==1.1.1
-

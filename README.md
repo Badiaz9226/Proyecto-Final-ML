@@ -129,11 +129,24 @@ La tabla comparativa completa está en `reports/metricas_validacion_cruzada.csv`
 
 Requisitos: Python 3.13 y el CSV oficial guardado como `data/codigo_unico_medicamentos_vigentes_20260921.csv`.
 
+Notas de compatibilidad para nuevos usuarios:
+
+- Use **Python 3.13.x** dentro de un entorno virtual limpio.
+- `requirements-dev.txt` fija `setuptools<81` para evitar `ModuleNotFoundError: pkg_resources`.
+- Si va a ejecutar el cuaderno en VS Code/Jupyter, registre el kernel del entorno local.
+
 ```bash
 python3.13 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements-dev.txt
+python -m ipykernel install --user --name proyecto_final_ml --display-name "Python (Proyecto Final ML)"
+```
+
+Si aparece un error de kernel o `pkg_resources`, fuerce reinstalación de tooling:
+
+```bash
+python -m pip install --force-reinstall "setuptools<81" ipykernel
 ```
 
 Auditoría, entrenamiento y prueba de integración:

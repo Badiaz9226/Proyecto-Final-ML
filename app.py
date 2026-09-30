@@ -292,11 +292,6 @@ def _render_sidebar(metadata: dict[str, Any], results: dict[str, Any]) -> None:
                 f"{int(data.get('unique_expedientes', 0)):,} expedientes"
             )
         st.divider()
-        st.warning(
-            "Uso exclusivamente académico. El resultado no reemplaza una decisión "
-            "oficial ni una revisión regulatoria de INVIMA.",
-            icon="⚠️",
-        )
 
 
 def _prediction_tab(model: Any, metadata: dict[str, Any]) -> None:

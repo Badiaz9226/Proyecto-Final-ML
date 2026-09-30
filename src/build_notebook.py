@@ -1,21 +1,14 @@
-"""Build the public Colab notebook for the final CUM machine-learning project.
-
-The generated notebook is intentionally saved without fabricated outputs.  It is
-designed to be executed from top to bottom after cloning the GitHub repository in
-Google Colab.  Every substantive step is preceded by the prompt used to guide the
-work, preserving the incremental teaching approach followed during the course.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from textwrap import dedent
 
 import nbformat as nbf
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_PATH = PROJECT_ROOT / "notebooks" / "Proyecto_Final_ML_CUM.ipynb"
+OUTPUT_PATH = PROJECT_ROOT / "notebook" / "Proyecto_Final_ML_CUM.ipynb"
 
 
 def clean(text: str) -> str:
@@ -43,13 +36,9 @@ def build_notebook() -> nbf.NotebookNode:
     def prompt(number: int, title: str, body: str) -> None:
         markdown(
             f"""
-            ### Prompt {number:02d} — {title}
+            ## {number:02d} — {title}
 
             > {body.strip()}
-
-            **Criterio de revisión humana.** El prompt orienta el paso, pero las
-            decisiones y conclusiones solo se aceptan si quedan respaldadas por el
-            código, los datos y las salidas visibles de este cuaderno.
             """
         )
 
@@ -63,97 +52,16 @@ def build_notebook() -> nbf.NotebookNode:
         **Fuente:** INVIMA — Datos Abiertos Colombia  
         **Dataset oficial:** [Código Único de Medicamentos Vigentes](https://www.datos.gov.co/Salud-y-Protecci-n-Social/C-DIGO-NICO-DE-MEDICAMENTOS-VIGENTES/i7cb-raxc/about_data)
 
-        Este cuaderno desarrolla el proyecto con las seis fases de **CRISP-DM**:
+        Desarrollo del proyecto con las seis fases de **CRISP-DM**:
         comprensión del negocio, comprensión de los datos, preparación, modelado,
-        evaluación y despliegue. Los bloques se ejecutan en orden; no se deben usar
-        salidas del conjunto de prueba para escoger el modelo.
-
-        > **Estado de las salidas:** el generador nunca inventa resultados. La copia
-        > entregada se ejecuta de principio a fin y conserva tablas, gráficos y
-        > métricas producidos con el snapshot real. `Entorno de ejecución > Ejecutar
-        > todas` permite reproducirlos en Colab.
-        """
-    )
-
-    prompt(
-        0,
-        "Traducir la guía a un plan CRISP-DM",
-        "Lee la guía del proyecto y conviértela en un plan verificable de seis fases, "
-        "sin omitir calidad, sesgo, fuga de información, cinco modelos clásicos, "
-        "votación, bagging, boosting, ajuste por grilla, validación cruzada, prueba "
-        "final, serialización y aplicación Streamlit.",
-    )
-    markdown(
-        """
-        ## 0. Resumen de ejecución y reglas del experimento
-
-        El objetivo de este cuaderno es dejar una trazabilidad completa, no solo
-        obtener una métrica alta. Las reglas son:
-
-        1. Una fila analítica representa una **presentación CUM**, no una fila cruda.
-        2. Un mismo expediente nunca puede quedar en entrenamiento y prueba.
-        3. El preprocesamiento y el balanceo se aprenden exclusivamente con los datos
-           de entrenamiento de cada partición.
-        4. La selección se bloquea con validación cruzada antes de mirar el test.
-        5. Las predicciones son apoyo académico para priorizar revisión; no sustituyen
-           una decisión oficial del INVIMA.
+        evaluación y despliegue.
         """
     )
 
     prompt(
         1,
-        "Formular el problema de negocio",
-        "Propón un problema de clasificación útil y realista con este conjunto. "
-        "Define usuario, decisión, variable objetivo, momento de predicción y costos "
-        "de falsos positivos y falsos negativos. No utilices variables que solo se "
-        "conocen después del resultado.",
-    )
-    markdown(
-        """
-        ## 1. Comprensión del negocio
-
-        **Pregunta:** ¿una presentación farmacéutica propuesta tiene características
-        estructurales compatibles con una *muestra médica*?
-
-        **Uso previsto:** priorizar casos para una revisión humana de consistencia
-        regulatoria o de empaque antes del registro. La clase positiva es `Sí`.
-
-        - Un falso negativo puede dejar sin priorizar una posible muestra médica.
-        - Un falso positivo consume tiempo de revisión innecesario.
-        - Por ese equilibrio, **F1** será la métrica principal. También se reportan
-          precisión, recall, accuracy, balanced accuracy, ROC-AUC y PR-AUC.
-        - No se usan fechas posteriores, estado vigente/inactivo, identificadores,
-          texto que revele literalmente la clase ni atributos de resultado.
-        """
-    )
-
-    prompt(
-        2,
-        "Delimitar riesgos, sesgos y uso responsable",
-        "Enumera los sesgos posibles del corte administrativo, el desbalance de la "
-        "clase y el riesgo de usar el modelo fuera de alcance. Escribe advertencias "
-        "concretas para impedir que el resultado se presente como decisión médica o "
-        "regulatoria.",
-    )
-    markdown(
-        """
-        ### Alcance y advertencias
-
-        El archivo es una fotografía administrativa, no una muestra aleatoria de todo
-        el mercado ni evidencia clínica. Las categorías poco frecuentes, cambios en
-        prácticas de registro y calidad desigual del texto pueden afectar el modelo.
-        El resultado no evalúa seguridad, eficacia, calidad terapéutica ni legalidad.
-        Cualquier uso real exige validación temporal, revisión del INVIMA, monitoreo de
-        deriva y un procedimiento humano de apelación.
-        """
-    )
-
-    prompt(
-        3,
-        "Preparar un entorno reproducible",
-        "Crea una celda que funcione tanto en Google Colab como en una copia local. "
-        "Si el repositorio no está disponible en Colab, clónalo; luego define rutas "
-        "relativas y una semilla fija. No uses rutas personales absolutas.",
+        "Preparación del entorno reproducible",
+        "Configura un entorno reproducible para el proyecto, asegurando que todas las dependencias y rutas estén correctamente definidas.",
     )
     code(
         r"""
@@ -203,8 +111,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        4,
-        "Instalar e importar dependencias",
+        2,
+        "Instalación e importación de dependencias",
         "Instala las versiones declaradas por el repositorio e importa únicamente las "
         "librerías necesarias. Registra las versiones para que el experimento pueda "
         "repetirse y diagnosticar incompatibilidades.",
@@ -264,11 +172,10 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        5,
+        3,
         "Registrar fuente y procedencia",
         "Documenta nombre, publicador, portal, URL oficial, identificador Socrata, "
-        "fecha del corte y huella SHA-256 del archivo realmente analizado. Si no está "
-        "en el repositorio, descárgalo desde el endpoint oficial.",
+        "fecha del corte y huella SHA-256 del archivo realmente analizado. ",
     )
     code(
         r"""
@@ -314,9 +221,9 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        6,
+        4,
         "Cargar y validar el archivo",
-        "Carga el CSV en UTF-8, conserva las columnas originales y detén el proceso si "
+        "Carga el CSV en UTF-8, conserva las columnas originales y detiene el proceso si "
         "faltan la clave de presentación o la variable objetivo. Muestra una vista "
         "acotada, nunca el archivo completo.",
     )
@@ -336,8 +243,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        7,
-        "Inspeccionar esquema y tipos",
+        5,
+        "Inspección del esquema y tipos",
         "Resume nombres, tipos inferidos, valores no nulos y cardinalidad. Señala que "
         "los tipos automáticos son una hipótesis y que fechas, códigos y cantidades "
         "deben validarse antes de modelar.",
@@ -356,8 +263,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        8,
-        "Construir el diccionario de datos",
+        6,
+        "Construcción del diccionario de datos",
         "Crea un diccionario que relacione cada columna con su significado operativo, "
         "rol analítico y decisión de uso. Distingue identificadores, atributos "
         "estructurales, fechas, texto, objetivo y posibles fugas.",
@@ -419,8 +326,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        9,
-        "Determinar el grano real del dataset",
+        7,
+        "Determinación del grano real del dataset",
         "Comprueba si una fila cruda equivale a una presentación. Cuenta combinaciones "
         "únicas de expediente y consecutivo, tamaño de cada grupo y repetición por "
         "ingredientes, roles y vías. Explica por qué un split aleatorio por filas "
@@ -453,8 +360,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        10,
-        "Auditar duplicados exactos y conflictos",
+        8,
+        "Auditoría de duplicados exactos y conflictos",
         "Cuantifica duplicados exactos, claves incompletas y variación de atributos que "
         "deberían ser invariantes dentro de una presentación. No elimines registros "
         "solo por repetirse: diferencia duplicación técnica de relaciones uno-a-muchos.",
@@ -480,8 +387,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        11,
-        "Auditar faltantes y valores centinela",
+        9,
+        "Auditoría de faltantes y valores centinela",
         "Calcula nulos por columna y busca cadenas vacías o marcadores como SIN DATO, "
         "N/A y guion. Separa ausencia real de errores y no imputes antes de dividir el "
         "conjunto.",
@@ -503,8 +410,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        12,
-        "Revisar fechas, codificación y categorías anómalas",
+        10,
+        "Revisión de fechas, codificación y categorías anómalas",
         "Convierte las fechas con coerción y cuenta valores no interpretables o años "
         "fuera de un rango plausible. Busca caracteres de reemplazo y variantes de "
         "unidades sin cambiar silenciosamente el archivo fuente.",
@@ -537,8 +444,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        13,
-        "Validar la variable objetivo",
+        11,
+        "Validación de la variable objetivo",
         "Lista todas las etiquetas de muestra médica, verifica que solo existan Sí y "
         "No después de normalizar acentos y detén el análisis ante una etiqueta "
         "desconocida. No conviertas silenciosamente valores extraños en clase negativa.",
@@ -554,8 +461,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        14,
-        "Consolidar a una fila por presentación CUM",
+        12,
+        "Consolidación a una fila por presentación CUM",
         "Agrupa por expediente CUM y consecutivo. Conserva atributos invariantes, "
         "combina categorías multivaluadas sin duplicarlas y crea conteos estructurales. "
         "No promedies cantidades de ingredientes que usan unidades incompatibles.",
@@ -600,8 +507,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        15,
-        "Describir la distribución del objetivo y las líneas base",
+        13,
+        "DDistribución del objetivo y las líneas base",
         "Calcula prevalencia por presentación, accuracy de la clase mayoritaria y PR-AUC "
         "esperada al azar. Grafica conteos y porcentajes con etiquetas legibles.",
     )
@@ -627,8 +534,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        16,
-        "Detectar fuga de información y sesgo de memorización",
+        14,
+        "Detección de fuga de información y sesgo de memorización",
         "Mide cuánto revelan literalmente la clase el nombre del producto y la "
         "descripción comercial. Comprueba además la repetición de expedientes. Usa el "
         "hallazgo para excluir esos textos e imponer particiones por expediente.",
@@ -668,8 +575,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        17,
-        "Seleccionar variables disponibles en inferencia",
+        15,
+        "Disponibilidad de variables en inferencia",
         "Presenta las variables finales y justifica su disponibilidad antes del "
         "resultado. Incluye cantidad CUM, forma, concentración, unidad, modalidad, "
         "vías, familias ATC, unidades y conteos estructurales; excluye identificadores, "
@@ -694,8 +601,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        18,
-        "Crear el holdout 70/30 sin fuga de expedientes",
+        16,
+        "Creación del holdout 70/30 sin fuga de expedientes",
         "Separa aproximadamente 70% para entrenamiento y 30% para prueba con "
         "estratificación agrupada. Todos los CUM de un expediente deben permanecer en "
         "el mismo lado. Fija la semilla y conserva el test intacto.",
@@ -721,8 +628,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        19,
-        "Demostrar que la partición es válida",
+        17,
+        "Demostración de que la partición es válida",
         "Agrega pruebas automáticas de ausencia de expedientes compartidos, cobertura "
         "de todas las filas, proporción aproximada 70/30 y presencia de ambas clases "
         "en los dos conjuntos.",
@@ -740,8 +647,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        20,
-        "Diseñar el preprocesamiento dentro del pipeline",
+        18,
+        "Diseño del preprocesamiento dentro del pipeline",
         "Construye un ColumnTransformer: mediana, log1p y escalamiento para numéricas; "
         "imputación y one-hot con categorías desconocidas para categóricas; y "
         "vectorización binaria para campos multivaluados. Evalúa también la reducción "
@@ -771,8 +678,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        21,
-        "Manejar el desbalance sin contaminar la validación",
+        19,
+        "Manejo del desbalance sin contaminar la validación",
         "Integra RandomOverSampler después del preprocesamiento y antes del modelo. "
         "Explica por qué debe vivir dentro de imblearn.Pipeline y nunca aplicarse al "
         "dataset completo ni al test.",
@@ -797,15 +704,15 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        22,
-        "Justificar las métricas",
+        20,
+        "Justificación de las métricas",
         "Define accuracy, precision, recall, F1, balanced accuracy, ROC-AUC y PR-AUC. "
         "Elige una métrica principal coherente con la clase minoritaria y con los "
         "costos de error; conserva una línea base de mayoría y otra de prevalencia.",
     )
     markdown(
         """
-        ## 4. Modelado — métricas
+        ## Modelado — métricas
 
         - **Precision:** de los casos marcados como muestra, cuántos realmente lo son.
         - **Recall:** de las muestras reales, cuántas se logran priorizar.
@@ -822,8 +729,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        23,
-        "Definir validación cruzada agrupada",
+        21,
+        "Definición de la validación cruzada agrupada",
         "Usa cinco folds de StratifiedGroupKFold exclusivamente sobre el 70% de "
         "entrenamiento. Materializa una vez las particiones para comparar todos los "
         "modelos sobre exactamente los mismos casos.",
@@ -849,8 +756,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        24,
-        "Configurar cinco modelos clásicos",
+        22,
+        "Configuración de cinco modelos clásicos",
         "Incluye regresión logística, SVM lineal, red neuronal MLP, árbol de decisión "
         "y K vecinos más cercanos con semillas y valores iniciales explícitos. Explica "
         "qué tipo de frontera o relación puede capturar cada uno.",
@@ -877,8 +784,8 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        25,
-        "Agregar ensembles de votación, bagging y boosting",
+        23,
+        "Adición de ensembles de votación, bagging y boosting",
         "Construye un VotingClassifier, un BaggingClassifier y AdaBoost. Mantén cada "
         "ensemble dentro del mismo pipeline y describe la diversidad, reducción de "
         "varianza o corrección secuencial que busca cada estrategia.",
@@ -899,7 +806,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        26,
+        24,
         "Ejecutar la comparación completa sin mirar el test",
         "Evalúa los ocho modelos, ajusta las grillas de logística y SVM, compara folds "
         "alineados, bloquea la elección y solo después evalúa una vez el holdout. "
@@ -923,7 +830,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        27,
+        25,
         "Comparar los modelos en validación cruzada",
         "Ordena la media y desviación de F1 de los modelos. Incluye train F1 para "
         "diagnóstico, barras de error y los valores por fold; no declares ganador por "
@@ -961,7 +868,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        28,
+        26,
         "Diagnosticar sobreajuste",
         "Calcula la diferencia entre F1 de entrenamiento y validación para cada modelo. "
         "Marca como señal de revisión, no como veredicto automático, las brechas altas "
@@ -980,7 +887,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        29,
+        27,
         "Ajustar regresión logística con GridSearchCV",
         "Busca C en 0.1, 1 y 10 y penalización L1/L2 con cinco folds agrupados. Explica "
         "que C pequeño regulariza más, C grande regulariza menos, L1 induce esparsidad "
@@ -1002,7 +909,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        30,
+        28,
         "Ajustar SVM lineal con GridSearchCV",
         "Busca C en 0.1, 1 y 10 y loss hinge/squared_hinge. Explica el control de margen "
         "y errores de C y la penalización lineal o cuadrática de las pérdidas. Optimiza "
@@ -1021,7 +928,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        31,
+        29,
         "Documentar rangos y efectos de hiperparámetros",
         "Construye una tabla que justifique cada hiperparámetro usado en los modelos y "
         "ensembles, su rango o valor, qué controla, efecto esperado al aumentarlo y "
@@ -1050,7 +957,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        32,
+        30,
         "Comparar estadísticamente y bloquear la selección",
         "Usa los mismos cinco folds para una prueba de Friedman y comparaciones pareadas "
         "contra la logística ajustada con corrección de Holm. Exige además una mejora "
@@ -1072,7 +979,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        33,
+        31,
         "Evaluar una sola vez en el test aislado",
         "Después de bloquear la selección, calcula accuracy, precision, recall, F1, "
         "balanced accuracy, ROC-AUC y PR-AUC en el 30% no visto. Muestra todos los "
@@ -1095,7 +1002,7 @@ def build_notebook() -> nbf.NotebookNode:
     )
 
     prompt(
-        34,
+        32,
         "Visualizar errores y curvas del modelo final",
         "Grafica matriz de confusión, ROC y Precision-Recall del pipeline elegido en el "
         "test. Etiqueta ejes, muestra líneas base y evita interpretar el puntaje como "
@@ -1203,8 +1110,6 @@ def build_notebook() -> nbf.NotebookNode:
             f"holdout agrupado F1 = **{metricas_finales['f1']:.4f}**, "
             f"precision = **{metricas_finales['precision']:.4f}** y "
             f"recall = **{metricas_finales['recall']:.4f}**. "
-            "La elección se realizó antes de consultar el test y el modelo debe "
-            "usarse únicamente como apoyo académico para priorizar revisión."
         ))
 
         if not auditoria_entrega["existe"].all():
@@ -1213,33 +1118,9 @@ def build_notebook() -> nbf.NotebookNode:
                 "complete app.py/README antes de publicar."
             )
         else:
-            print("Auditoría local completa. El repositorio queda listo para revisión y despliegue.")
+            print("Auditoría local completa. El repositorio está listo para revisión y despliegue.")
         """
     )
-    markdown(
-        """
-        ## 6. Despliegue y seguimiento
-
-        1. Subir los archivos versionados al repositorio público de GitHub.
-        2. En Streamlit Community Cloud, seleccionar el repositorio, rama `main` y
-           archivo principal `app.py`.
-        3. Verificar un caso con categorías conocidas y otro con categoría desconocida.
-        4. Registrar en el formato de entrega la URL pública real y una captura de la
-           aplicación funcionando.
-        5. Si cambia el corte del portal, repetir calidad, entrenamiento, evaluación y
-           comparación de distribución antes de reemplazar el modelo.
-
-        ### Limitaciones que permanecen
-
-        - El corte es administrativo y puede cambiar con actualizaciones del portal.
-        - La etiqueta puede reflejar procesos históricos o inconsistencias de captura.
-        - Las pruebas estadísticas usan pocos folds correlacionados; son evidencia
-          auxiliar y no una garantía de superioridad universal.
-        - El desempeño de test no demuestra validez temporal ni causal.
-        - El puntaje no está calibrado como probabilidad.
-        """
-    )
-
     notebook["cells"] = cells
     notebook["metadata"] = {
         "kernelspec": {
@@ -1278,10 +1159,13 @@ def main() -> None:
     prompt_cells = [
         cell
         for cell in reloaded.cells
-        if cell.cell_type == "markdown" and cell.source.startswith("### Prompt ")
+        if cell.cell_type == "markdown" and re.match(r"^## \d{2} — ", cell.source)
     ]
-    if len(prompt_cells) != 37:
-        raise AssertionError(f"Se esperaban 37 prompts y se generaron {len(prompt_cells)}")
+    expected_prompts = 34
+    if len(prompt_cells) != expected_prompts:
+        raise AssertionError(
+            f"Se esperaban {expected_prompts} prompts y se generaron {len(prompt_cells)}"
+        )
     print(f"Notebook creado y validado: {OUTPUT_PATH}")
     print(f"Celdas: {len(reloaded.cells)}; prompts: {len(prompt_cells)}")
 
