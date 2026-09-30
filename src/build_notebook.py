@@ -165,6 +165,7 @@ def build_notebook() -> nbf.NotebookNode:
             "pandas": "pandas",
             "scipy": "scipy",
             "sklearn": "scikit-learn",
+            "sklearn_compat": "sklearn-compat==0.1.6",
             "imblearn": "imbalanced-learn==0.14.2",
             "matplotlib": "matplotlib",
             "seaborn": "seaborn",
@@ -574,7 +575,7 @@ def build_notebook() -> nbf.NotebookNode:
 
     prompt(
         13,
-        "DDistribución del objetivo y las líneas base",
+        "Distribución del objetivo y las líneas base",
         "Calcula prevalencia por presentación, accuracy de la clase mayoritaria y PR-AUC "
         "esperada al azar. Grafica conteos y porcentajes con etiquetas legibles.",
     )

@@ -75,25 +75,25 @@ El conjunto de entrenamiento contiene **45.740 presentaciones (6.706 expedientes
 | Modelo | F1 CV agrupada, media ± DE | F1 en test |
 |---|---:|---:|
 | Regresión logística | 0,4846 ± 0,0097 | 0,4890 |
-| SVM lineal | 0,4831 ± 0,0086 | 0,4866 |
+| SVM lineal | 0,4830 ± 0,0085 | 0,4865 |
 | Red neuronal MLP | 0,4918 ± 0,0065 | 0,4924 |
 | Árbol de decisión | 0,4880 ± 0,0114 | 0,4908 |
-| K vecinos más cercanos | 0,4700 ± 0,0098 | 0,4589 |
+| K vecinos más cercanos | 0,4699 ± 0,0089 | 0,4587 |
 | Votación | 0,5016 ± 0,0066 | 0,5059 |
-| **Bagging** | **0,5061 ± 0,0032** | **0,5082** |
+| **Bagging** | **0,5063 ± 0,0032** | **0,5074** |
 | Boosting AdaBoost | 0,4862 ± 0,0128 | 0,4844 |
 | Regresión logística ajustada | 0,4851 ± 0,0104 | 0,4889 |
 | SVM lineal ajustada | 0,4874 ± 0,0113 | 0,4858 |
 
-Se seleccionó **Bagging** antes de abrir el test. Superó a la regresión logística ajustada por **0,0211 F1** en validación, por encima del margen práctico de 0,02. La prueba de Friedman indicó diferencias globales (`p = 0,000229`) y la comparación pareada Bagging–logística ajustada conservó significancia tras corrección de Holm (`p ajustado = 0,0303`). La mejor cuadrícula logística usó `C = 0,1` y L2; la SVM ajustada usó `C = 0,1` y pérdida `hinge`.
+Se seleccionó **Bagging** antes de abrir el test. Superó a la regresión logística ajustada por **0,0213 F1** en validación, por encima del margen práctico de 0,02. La prueba de Friedman indicó diferencias globales (`p = 0,000229`) y la comparación pareada Bagging–logística ajustada conservó significancia tras corrección de Holm (`p ajustado = 0,0295`). La mejor cuadrícula logística usó `C = 0,1` y L2; la SVM ajustada usó `C = 0,1` y pérdida `hinge`.
 
 Desempeño final de Bagging en el test no visto:
 
 | Accuracy | Precisión | Recall | F1 | Accuracy balanceada | ROC-AUC | PR-AUC |
 |---:|---:|---:|---:|---:|---:|---:|
-| 0,7055 | 0,3970 | 0,7061 | **0,5082** | 0,7057 | 0,7799 | 0,4900 |
+| 0,7044 | 0,3959 | 0,7064 | **0,5074** | 0,7051 | 0,7799 | 0,4901 |
 
-La matriz de confusión es `[[10.842, 4.530], [1.241, 2.982]]`: se detectaron 2.982 de los 4.223 positivos del test. La accuracy de la línea base mayoritaria es mayor (0,7845), pero su recall y F1 son cero porque nunca identifica una muestra médica; este contraste confirma por qué F1 y las métricas por clase son las referencias correctas.
+La matriz de confusión es `[[10.820, 4.552], [1.240, 2.983]]`: se detectaron 2.983 de los 4.223 positivos del test. La accuracy de la línea base mayoritaria es mayor (0,7845), pero su recall y F1 son cero porque nunca identifica una muestra médica; este contraste confirma por qué F1 y las métricas por clase son las referencias correctas.
 <!-- RESULTADOS_MODELO_FIN -->
 
 La tabla comparativa completa está en `reports/metricas_validacion_cruzada.csv` y `reports/metricas_test.csv`; los puntajes por fold están en `reports/metricas_cv_por_fold.csv`. La selección del modelo no se modifica después de consultar el test.

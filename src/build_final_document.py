@@ -226,7 +226,7 @@ def get_prompt_rows(notebook_path: Path) -> list[list[str]]:
         return []
     notebook = read_json(notebook_path)
     rows: list[list[str]] = []
-    pattern = re.compile(r"^### Prompt (\d{2}) — (.+)$", re.MULTILINE)
+    pattern = re.compile(r"^## (\d{2}) — (.+)$", re.MULTILINE)
     for cell in notebook.get("cells", []):
         if cell.get("cell_type") != "markdown":
             continue
@@ -265,7 +265,9 @@ def configure_document(document: Document) -> None:
 
 
 def build_document(args: argparse.Namespace) -> None:
-    root = args.output.parent.parent
+    # La raíz se obtiene desde el propio script para que el documento pueda
+    # guardarse directamente en la carpeta de entrega sin depender de su ruta.
+    root = Path(__file__).resolve().parent.parent
     reports = root / "reports"
     figures = root / "figures"
     results = read_json(reports / "resultados_modelado.json")
@@ -289,7 +291,7 @@ def build_document(args: argparse.Namespace) -> None:
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     subtitle = document.paragraphs[1].insert_paragraph_before(
         "Clasificación de presentaciones del Código Único de Medicamentos como muestra médica\n"
-        "Brayam Arboleda Diaz · Saul Dario Gomez · Corte 21/09/2026"
+        "Brayam Arboleda Diaz · Saul Dario Gomez · Corte de datos 21/09/2026 · Revisión 30/09/2026"
     )
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     for run in subtitle.runs:
@@ -630,9 +632,9 @@ def build_document(args: argparse.Namespace) -> None:
         ["Artefacto", "Ubicación/enlace", "Estado"],
         [
             ["Dataset snapshot", "data/codigo_unico_medicamentos_vigentes_20260921.csv", "Incluido; SHA-256 verificable"],
-            ["Notebook Colab", args.colab_url, "Público"],
-            ["GitHub", args.github_url, "Público"],
-            ["Streamlit", args.streamlit_url, "Activo"],
+            ["Notebook Colab", args.colab_url, "Público y ejecutado sin errores"],
+            ["GitHub", args.github_url, "Público; rama main actualizada"],
+            ["Streamlit", args.streamlit_url, "Público, activo y funcional"],
             ["Pipeline", "models/pipeline_muestra_medica.joblib", "Recargado y probado"],
             ["Metadata", "models/metadata_modelo.json", "Validado"],
             ["Profiling", "reports/reporte_ydata_profiling.html", "Completo: 155.807 filas"],
@@ -653,11 +655,60 @@ def build_document(args: argparse.Namespace) -> None:
     for conclusion in conclusions:
         document.add_paragraph(f"• {conclusion}")
 
+    deliverables_heading = add_heading(document, "9. Verificación de los seis entregables", 1)
+    deliverables_heading.paragraph_format.page_break_before = True
+    deliverables_table = add_table(
+        document,
+        ["N.º", "Entregable solicitado", "Ubicación o enlace", "Verificación final"],
+        [
+            [
+                "1",
+                "Documento completo con metodología CRISP-DM",
+                "Formato_Entrega_Proyecto_Integrador_CUM.docx",
+                "Completo: fases 1 a 6, evidencia, conclusiones y anexos",
+            ],
+            [
+                "2",
+                "Dataset utilizado",
+                "data/codigo_unico_medicamentos_vigentes_20260921.csv",
+                "Incluido; corte 21/09/2026 y SHA-256 registrado",
+            ],
+            [
+                "3",
+                "Enlace público a Google Colab",
+                "Abrir Google Colab",
+                "Público; ejecución rápida completa verificada",
+            ],
+            [
+                "4",
+                "Repositorio de GitHub",
+                "Abrir repositorio GitHub",
+                "Incluye app.py, pipeline, requirements.txt y README.md",
+            ],
+            [
+                "5",
+                "URL activa de Streamlit.io",
+                "Abrir aplicación Streamlit",
+                "Pública, activa y con predicción funcional verificada",
+            ],
+            [
+                "6",
+                "Reporte HTML generado con ydata-profiling",
+                "reports/reporte_ydata_profiling.html",
+                "Incluido: 7.980.306 bytes y 155.807 filas perfiladas",
+            ],
+        ],
+    )
+    add_hyperlink(deliverables_table.cell(3, 2), "Abrir Google Colab", args.colab_url)
+    add_hyperlink(deliverables_table.cell(4, 2), "Abrir repositorio GitHub", args.github_url)
+    add_hyperlink(deliverables_table.cell(5, 2), "Abrir aplicación Streamlit", args.streamlit_url)
+
     add_heading(document, "Anexo A. Registro de prompts", 1)
-    prompt_rows = get_prompt_rows(root / "notebooks" / "Proyecto_Final_ML_CUM.ipynb")
+    prompt_rows = get_prompt_rows(root / "notebook" / "Proyecto_Final_ML_CUM.ipynb")
     add_table(document, ["ID", "Propósito", "Verificación humana"], prompt_rows)
 
-    add_heading(document, "Anexo B. Trazabilidad técnica", 1)
+    technical_heading = add_heading(document, "Anexo B. Trazabilidad técnica", 1)
+    technical_heading.paragraph_format.page_break_before = True
     add_table(
         document,
         ["Elemento", "Valor"],
