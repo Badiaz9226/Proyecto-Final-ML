@@ -71,6 +71,7 @@ def build_notebook() -> nbf.NotebookNode:
         import sys
 
         REPO_URL = "https://github.com/Badiaz9226/Proyecto-Final-ML.git"
+        REPO_BRANCH = "main"
         RANDOM_STATE = 42
         EN_COLAB = (
             "google.colab" in sys.modules
@@ -88,9 +89,25 @@ def build_notebook() -> nbf.NotebookNode:
                 destino = Path("/content/Proyecto-Final-ML")
                 if not destino.exists():
                     subprocess.run(
-                        ["git", "clone", "--depth", "1", REPO_URL, str(destino)],
+                        [
+                            "git", "clone", "--depth", "1", "--branch", REPO_BRANCH,
+                            REPO_URL, str(destino),
+                        ],
                         check=True,
                     )
+                elif (destino / ".git").exists():
+                    # Si se vuelve a ejecutar la celda en la misma sesión, incorpora
+                    # correcciones publicadas sin borrar archivos del usuario.
+                    actualizacion = subprocess.run(
+                        ["git", "-C", str(destino), "pull", "--ff-only", "origin", REPO_BRANCH],
+                        text=True,
+                        capture_output=True,
+                    )
+                    if actualizacion.returncode != 0:
+                        print(
+                            "Aviso: no fue posible actualizar la copia existente con "
+                            "fast-forward. Se continuará con sus archivos actuales."
+                        )
                 return destino
             raise FileNotFoundError(
                 "No se encontró src/train_model.py. Ejecute el cuaderno desde la "
@@ -105,40 +122,78 @@ def build_notebook() -> nbf.NotebookNode:
         for carpeta in (DATOS, REPORTES, FIGURAS, MODELOS):
             carpeta.mkdir(parents=True, exist_ok=True)
 
+        recursos_repositorio = {
+            "módulo de entrenamiento": RAIZ / "src" / "train_model.py",
+            "aplicación Streamlit": RAIZ / "app.py",
+            "dataset CUM": DATOS / "codigo_unico_medicamentos_vigentes_20260921.csv",
+            "modelo publicado": MODELOS / "pipeline_muestra_medica.joblib",
+            "resultados publicados": REPORTES / "resultados_modelado.json",
+            "perfil de datos": REPORTES / "reporte_ydata_profiling.html",
+        }
+        faltantes_repositorio = [
+            nombre for nombre, ruta in recursos_repositorio.items() if not ruta.exists()
+        ]
+        if faltantes_repositorio:
+            raise FileNotFoundError(
+                "La copia del repositorio está incompleta. Faltan: "
+                + ", ".join(faltantes_repositorio)
+            )
+
         print(f"Entorno: {'Google Colab' if EN_COLAB else 'local'}")
         print(f"Raíz del proyecto: {RAIZ}")
+        print(f"Recursos verificados: {len(recursos_repositorio)} de {len(recursos_repositorio)}")
         """
     )
 
     prompt(
         2,
         "Instalación e importación de dependencias",
-        "Instala las versiones declaradas por el repositorio e importa únicamente las "
-        "librerías necesarias. Registra las versiones para que el experimento pueda "
-        "repetirse y diagnosticar incompatibilidades.",
+        "Verifica el entorno de Colab sin reemplazar NumPy, SciPy, pandas ni scikit-learn "
+        "con el kernel activo. Instala únicamente módulos ausentes y sin alterar sus "
+        "dependencias; después importa las librerías y registra sus versiones.",
     )
     code(
         r"""
-        archivo_requisitos = RAIZ / "requirements-dev.txt"
-        if archivo_requisitos.exists():
-            subprocess.run(
-                [sys.executable, "-m", "pip", "install", "-q", "-r", str(archivo_requisitos)],
-                check=True,
-            )
-        else:
+        import importlib.util
+
+        # Colab ya incorpora una pila científica coherente. Reinstalar NumPy/pandas/
+        # SciPy/scikit-learn dentro del kernel activo puede mezclar extensiones binarias
+        # cargadas con archivos de otra versión. Solo se agregan módulos realmente
+        # ausentes y se usa --no-deps para conservar esa pila coherente.
+        modulos_requeridos = {
+            "numpy": "numpy",
+            "pandas": "pandas",
+            "scipy": "scipy",
+            "sklearn": "scikit-learn",
+            "imblearn": "imbalanced-learn==0.14.2",
+            "matplotlib": "matplotlib",
+            "seaborn": "seaborn",
+            "joblib": "joblib",
+        }
+        paquetes_ausentes = [
+            paquete
+            for modulo, paquete in modulos_requeridos.items()
+            if importlib.util.find_spec(modulo) is None
+        ]
+        if paquetes_ausentes:
             subprocess.run(
                 [
-                    sys.executable, "-m", "pip", "install", "-q",
-                    "pandas", "numpy", "scikit-learn", "imbalanced-learn",
-                    "matplotlib", "seaborn", "joblib", "ydata-profiling",
+                    sys.executable, "-m", "pip", "install", "-q", "--no-deps",
+                    *paquetes_ausentes,
                 ],
                 check=True,
             )
+            importlib.invalidate_caches()
+        print(
+            "Dependencias ausentes instaladas: "
+            + (", ".join(paquetes_ausentes) if paquetes_ausentes else "ninguna")
+        )
 
         import hashlib
         import json
         import platform
         import urllib.request
+        import warnings
 
         import joblib
         import matplotlib.pyplot as plt
@@ -149,6 +204,7 @@ def build_notebook() -> nbf.NotebookNode:
         from IPython.display import display, Markdown
         from scipy.stats import friedmanchisquare
         from sklearn.base import clone
+        from sklearn.exceptions import ConvergenceWarning
         from sklearn.metrics import (
             ConfusionMatrixDisplay,
             PrecisionRecallDisplay,
@@ -482,19 +538,29 @@ def build_notebook() -> nbf.NotebookNode:
         ### Informe automático de perfil de datos
 
         Además de las comprobaciones explícitas —que siguen siendo la fuente de las
-        decisiones metodológicas— se genera el HTML solicitado con `ydata-profiling`.
-        El modo mínimo evita asociaciones costosas en campos de alta cardinalidad; no
-        reemplaza la auditoría de grano, fuga ni fechas realizada arriba.
+        decisiones metodológicas— el repositorio incluye el HTML solicitado generado
+        con `ydata-profiling`. En Colab se reutiliza ese artefacto verificado para no
+        reemplazar la pila científica del kernel; solo se regenera en un entorno local
+        donde la dependencia ya esté instalada.
         """
     )
     code(
         r"""
-        from ydata_profiling import ProfileReport
-
         ruta_perfil = REPORTES / "reporte_ydata_profiling.html"
         if ruta_perfil.exists():
             print(f"Perfil ydata completo ya verificado; se reutiliza: {ruta_perfil}")
         else:
+            if EN_COLAB:
+                raise FileNotFoundError(
+                    "Falta reports/reporte_ydata_profiling.html en la copia del repositorio. "
+                    "Vuelva a ejecutar la primera celda para actualizar los recursos."
+                )
+            try:
+                from ydata_profiling import ProfileReport
+            except ImportError as error:
+                raise ImportError(
+                    "Para regenerar el perfil localmente instale requirements-dev.txt."
+                ) from error
             perfil = ProfileReport(
                 datos_crudos,
                 title="Perfil de datos — Código Único de Medicamentos Vigentes",
@@ -823,9 +889,21 @@ def build_notebook() -> nbf.NotebookNode:
                 "Cambie EJECUTAR_ENTRENAMIENTO_COMPLETO a True para producir resultados reales."
             )
 
-        artefactos = train_model.train_and_evaluate(datos_crudos.copy())
+        with warnings.catch_warnings(record=True) as avisos_entrenamiento:
+            warnings.simplefilter("always", ConvergenceWarning)
+            artefactos = train_model.train_and_evaluate(datos_crudos.copy())
         resultados = artefactos.results
         print("Entrenamiento y evaluación terminados con datos reales.")
+        avisos_convergencia = [
+            aviso for aviso in avisos_entrenamiento
+            if issubclass(aviso.category, ConvergenceWarning)
+        ]
+        if avisos_convergencia:
+            print(
+                f"Nota diagnóstica: {len(avisos_convergencia)} ajustes de SVM "
+                "alcanzaron el límite de iteraciones; las métricas se conservaron "
+                "y la selección se contrastó con los demás modelos."
+            )
         """
     )
 
@@ -1082,7 +1160,7 @@ def build_notebook() -> nbf.NotebookNode:
     code(
         r"""
         archivos_entrega = {
-            "notebook": RAIZ / "notebooks" / "Proyecto_Final_ML_CUM.ipynb",
+            "notebook": RAIZ / "notebook" / "Proyecto_Final_ML_CUM.ipynb",
             "aplicacion": RAIZ / "app.py",
             "requisitos": RAIZ / "requirements.txt",
             "readme": RAIZ / "README.md",

@@ -8,7 +8,7 @@ Aplicación académica de aprendizaje automático que prioriza presentaciones de
 **Publicador:** INVIMA  
 **Corte reproducido:** 21 de septiembre de 2026  
 **Repositorio:** [Badiaz9226/Proyecto-Final-ML](https://github.com/Badiaz9226/Proyecto-Final-ML)  
-**Google Colab público:** [Abrir el notebook ejecutado en Colab](https://colab.research.google.com/github/Badiaz9226/Proyecto-Final-ML/blob/main/notebooks/Proyecto_Final_ML_CUM.ipynb)
+**Google Colab público:** [Abrir el notebook en Colab](https://colab.research.google.com/github/Badiaz9226/Proyecto-Final-ML/blob/main/notebook/Proyecto_Final_ML_CUM.ipynb)
 
 ## Problema y uso previsto
 
@@ -103,7 +103,7 @@ La tabla comparativa completa está en `reports/metricas_validacion_cruzada.csv`
 ```text
 .
 ├── app.py                                  # aplicación Streamlit
-├── notebooks/
+├── notebook/
 │   └── Proyecto_Final_ML_CUM.ipynb         # desarrollo incremental con prompts
 ├── data/
 │   ├── codigo_unico_medicamentos_vigentes_20260921.csv
@@ -113,8 +113,6 @@ La tabla comparativa completa está en `reports/metricas_validacion_cruzada.csv`
 │   └── metadata_modelo.json                 # contrato y opciones de entrada
 ├── reports/                                 # perfil, métricas y evidencia auditable
 ├── figures/                                 # gráficos y captura del despliegue público
-├── docs/
-│   └── Formato_Entrega_Proyecto_Integrador_CUM.docx
 ├── src/
 │   ├── data_quality.py                      # auditoría de datos
 │   ├── train_model.py                       # preparación, entrenamiento y evaluación
@@ -160,6 +158,17 @@ python -m src.integration_check
 ```
 
 La última orden debe finalizar con todos los controles en `OK` y crear `reports/prueba_integracion.csv`.
+
+### Ejecución en Google Colab
+
+Abra el enlace público indicado al inicio y use **Entorno de ejecución → Ejecutar todas**.
+La primera celda clona o actualiza `main` y comprueba el dataset, el modelo y los
+reportes versionados. La segunda conserva la pila científica preinstalada por Colab;
+solo agrega un módulo si realmente falta, evitando incompatibilidades binarias al
+reinstalar NumPy con el kernel activo.
+
+Si antes ejecutó una versión antigua del cuaderno que reinstalaba NumPy, reinicie la
+sesión de Colab una vez antes de ejecutar la versión corregida.
 
 Ejecución de la aplicación:
 
